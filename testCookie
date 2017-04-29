@@ -1,0 +1,29 @@
+var express = require('express');
+var cookieParser = require('cookie-parser');    //导入中间件
+
+var app = express();
+app.use(cookieParser());  //应用cookieParser中间件
+//app.use(cookieParser('saddiness'));    //对cookie的value进行签名（加密）
+
+app.get('/read',function(req,res,next){  
+	res.json(req.cookies);  //由于前面用到cookieParser，这里可以得到cookie，如何没有的话就为{}
+});
+
+app.get('/write',function(req,res,next){
+	res.cookie('my_cookie','hello world');  //写入cookie，name为my_cookie，value为hello world
+	//res.cookie('my_cookie','hello world',{domain:'www.abc.com'});   //在cookie中设置域名
+	//res.cookie('my_cookie','hello world',{domain:'www.abc.com',path:'/abc'});    //在cookie中设置路径，只在该路径下可见
+	//res.cookie('my_cookie','hello world',{maxAge:3*60*1000});     //设置cookie失效时间的两种方式，maxAge和expires          
+	//res.cookie('my_cookie','hello world',{expires:new Date(Date.now()+3*60*1000)});   
+	//res.cookie('my_cookie','hello world',{httpOnly: true});      //设置只能以http方式访问
+    //res.cookie('my_cookie','hello world',{signed: true});      //设置签名，防止用户篡改
+
+	res.json(req.cookies);    
+	//res.json(req.signedCookies);   //获取签名后的cookie
+});
+/*
+app.get('/abc',function(req,res,next){  
+	res.json(req.cookies);  
+});
+*/
+app.listen(3000);
